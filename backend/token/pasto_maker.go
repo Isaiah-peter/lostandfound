@@ -1,8 +1,9 @@
 package token
 
 import (
-	"bytes"
+	"errors"
 	"fmt"
+	"time"
 
 	"golang.org/x/crypto/chacha20poly1305"
 
@@ -10,20 +11,19 @@ import (
 )
 
 type PasetoMaker struct {
-	paseto *paseto.V2
+	paseto      *paseto.V2
 	symetrickey []byte
 }
 
 var ErrInvalidToken = errors.New("token is invalid")
 
-
 func NewPasetomaker(symetrickey string) (Maker, error) {
 	if len(symetrickey) != chacha20poly1305.KeySize {
-		return nil, fmt.Errorf("invalid keysize: must have this number of character: ", chacha20poly1305.KeySize)
+		return nil, fmt.Errorf("invalid keysize: must have this number of character: %d", chacha20poly1305.KeySize)
 	}
 
 	maker := &PasetoMaker{
-		paseto: paseto.NewV2(),
+		paseto:      paseto.NewV2(),
 		symetrickey: []byte(symetrickey),
 	}
 

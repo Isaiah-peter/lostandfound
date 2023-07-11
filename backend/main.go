@@ -24,7 +24,7 @@ func main() {
 
 	store := db.NewStore(conn)
 
-	server := api.NewServer(store)
+	server, _ := api.NewServer(store)
 
 	err = server.Start(serverAddress)
 
