@@ -8,6 +8,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const createLostItem = `-- name: CreateLostItem :one
@@ -26,16 +27,16 @@ INSERT INTO lost_items (
 `
 
 type CreateLostItemParams struct {
-	CategoryID  sql.NullInt32      `json:"category_id"`
-	FounderID   int32              `json:"founder_id"`
-	Title       string             `json:"title"`
-	Discription string             `json:"discription"`
-	Date        sql.NullTime       `json:"date"`
-	Time        sql.NullString     `json:"time"`
-	Location    string             `json:"location"`
-	PostType    NullPostTypeStatus `json:"post_type"`
-	Status      NullItemStatus     `json:"status"`
-	Remark      sql.NullString     `json:"remark"`
+	CategoryID  sql.NullInt32  `json:"category_id"`
+	FounderID   int32          `json:"founder_id"`
+	Title       string         `json:"title"`
+	Discription string         `json:"discription"`
+	Date        time.Time      `json:"date"`
+	Time        string         `json:"time"`
+	Location    string         `json:"location"`
+	PostType    PostTypeStatus `json:"post_type"`
+	Status      ItemStatus     `json:"status"`
+	Remark      string         `json:"remark"`
 }
 
 func (q *Queries) CreateLostItem(ctx context.Context, arg CreateLostItemParams) (LostItem, error) {
@@ -158,8 +159,8 @@ WHERE id = $1
 `
 
 type UpdateLostItemStatusParams struct {
-	ID     int32          `json:"id"`
-	Status NullItemStatus `json:"status"`
+	ID     int32      `json:"id"`
+	Status ItemStatus `json:"status"`
 }
 
 func (q *Queries) UpdateLostItemStatus(ctx context.Context, arg UpdateLostItemStatusParams) error {

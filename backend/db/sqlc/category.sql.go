@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createCategory = `-- name: CreateCategory :one
@@ -18,8 +17,8 @@ INSERT INTO categories (
 `
 
 type CreateCategoryParams struct {
-	Title       sql.NullString `json:"title"`
-	Discription sql.NullString `json:"discription"`
+	Title       string `json:"title"`
+	Discription string `json:"discription"`
 }
 
 func (q *Queries) CreateCategory(ctx context.Context, arg CreateCategoryParams) (Category, error) {
@@ -107,9 +106,9 @@ WHERE id = $1
 `
 
 type UpdateCategoryParams struct {
-	ID          int32          `json:"id"`
-	Title       sql.NullString `json:"title"`
-	Discription sql.NullString `json:"discription"`
+	ID          int32  `json:"id"`
+	Title       string `json:"title"`
+	Discription string `json:"discription"`
 }
 
 func (q *Queries) UpdateCategory(ctx context.Context, arg UpdateCategoryParams) error {

@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"fmt"
+	"time"
 )
 
 type ItemStatus string
@@ -95,41 +96,41 @@ func (ns NullPostTypeStatus) Value() (driver.Value, error) {
 }
 
 type Category struct {
-	ID          int32          `json:"id"`
-	Title       sql.NullString `json:"title"`
-	Discription sql.NullString `json:"discription"`
-	CreatedAt   sql.NullTime   `json:"created_at"`
+	ID          int32        `json:"id"`
+	Title       string       `json:"title"`
+	Discription string       `json:"discription"`
+	CreatedAt   sql.NullTime `json:"created_at"`
 }
 
 type LostItem struct {
-	ID          int32              `json:"id"`
-	CategoryID  sql.NullInt32      `json:"category_id"`
-	FounderID   int32              `json:"founder_id"`
-	Title       string             `json:"title"`
-	Discription string             `json:"discription"`
-	Date        sql.NullTime       `json:"date"`
-	Time        sql.NullString     `json:"time"`
-	Location    string             `json:"location"`
-	PostType    NullPostTypeStatus `json:"post_type"`
-	Status      NullItemStatus     `json:"status"`
-	Remark      sql.NullString     `json:"remark"`
-	CreatedAt   sql.NullTime       `json:"created_at"`
+	ID          int32          `json:"id"`
+	CategoryID  sql.NullInt32  `json:"category_id"`
+	FounderID   int32          `json:"founder_id"`
+	Title       string         `json:"title"`
+	Discription string         `json:"discription"`
+	Date        time.Time      `json:"date"`
+	Time        string         `json:"time"`
+	Location    string         `json:"location"`
+	PostType    PostTypeStatus `json:"post_type"`
+	Status      ItemStatus     `json:"status"`
+	Remark      string         `json:"remark"`
+	CreatedAt   sql.NullTime   `json:"created_at"`
 }
 
 type LostItemsImage struct {
-	ID            int32          `json:"id"`
-	LostItemID    sql.NullInt32  `json:"lost_item_id"`
-	LostItemImage sql.NullString `json:"lost_item_image"`
-	CreatedAt     sql.NullTime   `json:"created_at"`
+	ID            int32        `json:"id"`
+	LostItemID    int32        `json:"lost_item_id"`
+	LostItemImage string       `json:"lost_item_image"`
+	CreatedAt     sql.NullTime `json:"created_at"`
 }
 
 type User struct {
-	ID        int32          `json:"id"`
-	FullName  string         `json:"full_name"`
-	Address   sql.NullString `json:"address"`
-	Contact   string         `json:"contact"`
-	Username  sql.NullString `json:"username"`
-	UserImage sql.NullString `json:"user_image"`
-	Password  sql.NullString `json:"password"`
-	CreatedAt sql.NullTime   `json:"created_at"`
+	ID        int32        `json:"id"`
+	FullName  string       `json:"full_name"`
+	Address   string       `json:"address"`
+	Contact   string       `json:"contact"`
+	Username  string       `json:"username"`
+	UserImage string       `json:"user_image"`
+	Password  string       `json:"password"`
+	CreatedAt sql.NullTime `json:"created_at"`
 }

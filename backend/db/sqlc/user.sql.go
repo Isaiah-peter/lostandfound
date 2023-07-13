@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -22,12 +21,12 @@ INSERT INTO users (
 `
 
 type CreateUserParams struct {
-	FullName  string         `json:"full_name"`
-	Address   sql.NullString `json:"address"`
-	Contact   string         `json:"contact"`
-	Username  sql.NullString `json:"username"`
-	UserImage sql.NullString `json:"user_image"`
-	Password  sql.NullString `json:"password"`
+	FullName  string `json:"full_name"`
+	Address   string `json:"address"`
+	Contact   string `json:"contact"`
+	Username  string `json:"username"`
+	UserImage string `json:"user_image"`
+	Password  string `json:"password"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -76,11 +75,11 @@ func (q *Queries) GetUser(ctx context.Context, id int32) (User, error) {
 
 const getUserByUserName = `-- name: GetUserByUserName :one
 SELECT id, full_name, address, contact, username, user_image, password, created_at FROM users
-WHERE full_name = $1 LIMIT 1
+WHERE username = $1 LIMIT 1
 `
 
-func (q *Queries) GetUserByUserName(ctx context.Context, fullName string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByUserName, fullName)
+func (q *Queries) GetUserByUserName(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByUserName, username)
 	var i User
 	err := row.Scan(
 		&i.ID,

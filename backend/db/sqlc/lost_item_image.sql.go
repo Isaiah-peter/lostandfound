@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createImage = `-- name: CreateImage :one
@@ -18,8 +17,8 @@ INSERT INTO lost_items_images (
 `
 
 type CreateImageParams struct {
-	LostItemID    sql.NullInt32  `json:"lost_item_id"`
-	LostItemImage sql.NullString `json:"lost_item_image"`
+	LostItemID    int32  `json:"lost_item_id"`
+	LostItemImage string `json:"lost_item_image"`
 }
 
 func (q *Queries) CreateImage(ctx context.Context, arg CreateImageParams) (LostItemsImage, error) {
@@ -49,7 +48,7 @@ DELETE FROM lost_items_images
 WHERE lost_item_id = $1
 `
 
-func (q *Queries) DeleteImageByLID(ctx context.Context, lostItemID sql.NullInt32) error {
+func (q *Queries) DeleteImageByLID(ctx context.Context, lostItemID int32) error {
 	_, err := q.db.ExecContext(ctx, deleteImageByLID, lostItemID)
 	return err
 }
@@ -76,7 +75,7 @@ SELECT id, lost_item_id, lost_item_image, created_at FROM lost_items_images
 WHERE lost_item_id = $1 LIMIT 5
 `
 
-func (q *Queries) GetImageByLID(ctx context.Context, lostItemID sql.NullInt32) (LostItemsImage, error) {
+func (q *Queries) GetImageByLID(ctx context.Context, lostItemID int32) (LostItemsImage, error) {
 	row := q.db.QueryRowContext(ctx, getImageByLID, lostItemID)
 	var i LostItemsImage
 	err := row.Scan(
