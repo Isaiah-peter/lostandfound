@@ -17,7 +17,7 @@ type Server struct {
 }
 
 func NewServer(store *db.Store) (*Server, error) {
-	tokenMaker, err := token.NewPasetomaker("qwertyqwerty")
+	tokenMaker, err := token.NewPasetomaker("qawsedrftgyhujikolp1z2x3c4v5b6n7")
 	if err != nil {
 		return nil, fmt.Errorf("cannot make token %w", err)
 	}
@@ -25,17 +25,17 @@ func NewServer(store *db.Store) (*Server, error) {
 		store: store,
 		tokenMaker: tokenMaker,
 	}
-	router := gin.Default()
-
-	router.POST("/user", server.createUser)
-	router.GET("/user/:id", server.getUser)
-
-	server.router = router
+	server.setupRouter()
 	return server, nil
 }
 
-func (server *Server) Start(adress string) error {
-	return server.router.Run(adress)
+
+func (server *Server) Start() error {
+	return server.router.Run("localhost:8080")
+}
+
+func (server *Server) Stop() string {
+	return "server working"
 }
 
 func errorResponse(err error) gin.H {

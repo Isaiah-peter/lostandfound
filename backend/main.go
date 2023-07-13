@@ -2,17 +2,17 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
-	_ "github.com/lib/pq"
 	"github.com/Isaiah-peter/lostandfound/api"
 	db "github.com/Isaiah-peter/lostandfound/db/sqlc"
+	_ "github.com/lib/pq"
 )
 
 const (
-	dbDriver = "postgres"
-	dbSource = "postgresql://postgres12:secret@localhost:5342/lostandfound?sslmode=disable"
-	serverAddress = "0.0.0.0:8080"
+	dbDriver      = "postgres"
+	dbSource      = "postgresql://postgres12:secret@localhost:5342/lostandfound?sslmode=disable"
 )
 
 func main() {
@@ -21,12 +21,15 @@ func main() {
 	if err != nil {
 		log.Fatal("fail to connect to database: ", err.Error())
 	}
-
 	store := db.NewStore(conn)
 
-	server, _ := api.NewServer(store)
+	server, err := api.NewServer(store)
 
-	err = server.Start(serverAddress)
+	if err != nil {
+		fmt.Println("cannot create server", err.Error())
+	}
+
+	err = server.Start()
 
 	if err != nil {
 		log.Fatal("fail to start server: ", err.Error())
