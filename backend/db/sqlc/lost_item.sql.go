@@ -122,7 +122,7 @@ func (q *Queries) ListLostItem(ctx context.Context, arg ListLostItemParams) ([]L
 		return nil, err
 	}
 	defer rows.Close()
-	var items []LostItem
+	items := []LostItem{}
 	for rows.Next() {
 		var i LostItem
 		if err := rows.Scan(
