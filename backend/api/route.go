@@ -10,6 +10,9 @@ func (server *Server) setupRouter() {
 
 	authRouter := router.Group("/").Use(authMiddleware(server.tokenMaker))
 	authRouter.GET("/user/:id", server.getUser)
+	authRouter.POST("/category", server.createCategory)
+	authRouter.GET("/category/:id", server.getCategory)
+	authRouter.GET("/category/list", server.ListCategory)
 
 	server.router = router
 }
