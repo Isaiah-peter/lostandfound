@@ -29,8 +29,6 @@ func (server *Server) createUser(ctx *gin.Context) {
 
 	hashpassword, _ := util.HashPassword(req.Password)
 
-	fmt.Println(hashpassword)
-
 	arg := db.CreateUserParams{
 		FullName:  req.FullName,
 		Address:   req.Address,

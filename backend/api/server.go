@@ -30,12 +30,8 @@ func NewServer(store *db.Store) (*Server, error) {
 }
 
 
-func (server *Server) Start() error {
-	return server.router.Run("localhost:8080")
-}
-
-func (server *Server) Stop() string {
-	return "server working"
+func (server *Server) Start(addr string) error {
+	return server.router.Run(addr)
 }
 
 func errorResponse(err error) gin.H {

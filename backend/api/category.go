@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type CreateCategoryReq struct {
+type createCategoryReq struct {
 	Title       string `json:"title"`
 	Discription string `json:"discription"`
 }
@@ -18,9 +18,9 @@ func (server *Server) bindingError(ctx *gin.Context, code int, err error) {
 }
 
 func (server *Server) createCategory(ctx *gin.Context) {
-	var req CreateCategoryReq
+	var req createCategoryReq
 
-	if err := ctx.ShouldBindQuery(&req); err != nil {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		server.bindingError(ctx, http.StatusBadRequest, err)
 	}
 
@@ -38,7 +38,7 @@ func (server *Server) createCategory(ctx *gin.Context) {
 }
 
 type GetCategoryReq struct {
-	Id int32 `uri:id`
+	Id int32 `uri:"id" binding: "required,min=1"`
 }
 
 func (server *Server) getCategory(ctx *gin.Context) {
@@ -58,14 +58,14 @@ func (server *Server) getCategory(ctx *gin.Context) {
 }
 
 type ListCategoryReq struct {
-	PageId int32 `json:"page_id"`
-	PageSize int32 `json:"page_size"`
+	PageId int32 `form:"page_id"`
+	PageSize int32 `form:"page_size"`
 }
 
 func (server *Server) ListCategory(ctx *gin.Context) {
 	var req ListCategoryReq
 
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	if err := ctx.ShouldBindQuery(&req); err != nil {
 		server.bindingError(ctx, http.StatusBadRequest, err)
 	}
 
