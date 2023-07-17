@@ -13,6 +13,13 @@ func (server *Server) setupRouter() {
 	authRouter.POST("/category", server.createCategory)
 	authRouter.GET("/category/:id", server.getCategory)
 	authRouter.GET("/category/list", server.ListCategory)
+	authRouter.PUT("/category/update/:id", server.updateCategory)
+	authRouter.DELETE("/category/delete/:id", server.deleteCategory)
+	authRouter.POST("/lostitems", server.createLostItem)
+	authRouter.GET("/lostitems/:id", server.getLostItem)
+	authRouter.GET("/lostitems/list", server.ListLostItem)
+	authRouter.PUT("/lostitems/update/:id", server.updateLostItem)
+	authRouter.DELETE("/lostitems/delete/:id", server.deleteLostItem)
 
 	server.router = router
 }
