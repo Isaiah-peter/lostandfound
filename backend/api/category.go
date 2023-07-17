@@ -38,7 +38,7 @@ func (server *Server) createCategory(ctx *gin.Context) {
 }
 
 type GetCategoryReq struct {
-	Id int32 `uri:"id" binding: "required,min=1"`
+	Id int32 `uri:"id" binding:"required,min=1"`
 }
 
 func (server *Server) getCategory(ctx *gin.Context) {
@@ -81,4 +81,64 @@ func (server *Server) ListCategory(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, categories)
+}
+
+type UpdateCategoryReq struct {
+	Title string `json:"title"`
+	Discription string `json:"discription"`
+}
+
+func (server *Server) updateCategory(ctx *gin.Context) {
+	var input UpdateCategoryReq
+
+	var id GetCategoryReq
+
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		server.bindingError(ctx, http.StatusBadRequest, err)
+	}
+
+	if err := ctx.ShouldBindUri(&id); err != nil {
+		server.bindingError(ctx, http.StatusBadRequest, err)
+	}
+
+	cat, err := server.store.GetCategory(ctx, id.Id)
+	if err != nil {
+		server.bindingError(ctx, http.StatusBadRequest, err)
+	}
+
+	arg := db.UpdateCategoryParams{
+		ID: id.Id,
+		Title: input.Title,
+		Discription: input.Discription,
+	}
+
+	if arg.Discription == "" {
+		arg.Discription = cat.Discription
+	}
+
+	if arg.Title == "" {
+		arg.Title = cat.Title
+	}
+
+	if err := server.store.UpdateCategory(ctx, arg); err != nil {
+		server.bindingError(ctx, http.StatusInternalServerError, err)
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"msg": "succesfully update category"})
+}
+
+func (server *Server) deleteCategory(ctx *gin.Context) {
+	var req GetCategoryReq
+
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		server.bindingError(ctx, http.StatusBadRequest, err)
+	}
+
+	err := server.store.DeleteCategory(ctx, req.Id)
+
+	if err != nil {
+		server.bindingError(ctx, http.StatusInternalServerError, err)
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"msg": "succesfully update category"})
 }
