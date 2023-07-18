@@ -1,15 +1,25 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
+	"time"
 
 	db "github.com/Isaiah-peter/lostandfound/db/sqlc"
 	"github.com/gin-gonic/gin"
 )
 
 type createLostItemReq struct {
+	CategoryID  int32  `json:"category_id"`
+	FounderID   int32  `json:"founder_id"`
 	Title       string `json:"title"`
 	Discription string `json:"discription"`
+	Date        string `json:"date"`
+	Time        string `json:"time"`
+	Location    string `json:"location"`
+	PostType    string `json:"post_type"`
+	Status      string `json:"status"`
+	Remark      string `json:"remark"`
 }
 
 func (server *Server) createLostItem(ctx *gin.Context) {
@@ -19,9 +29,27 @@ func (server *Server) createLostItem(ctx *gin.Context) {
 		server.bindingError(ctx, http.StatusBadRequest, err)
 	}
 
+	dates, _ := time.Parse("2006-Jan-02", req.Date)
+
 	arg := db.CreateLostItemParams{
+		CategoryID: sql.NullInt32{
+			Int32: req.CategoryID,
+			Valid: true,
+		},
+		FounderID:   req.FounderID,
 		Title:       req.Title,
 		Discription: req.Discription,
+		Date:        dates,
+		Time:        req.Time,
+		Location:    req.Location,
+		Status:      db.ItemStatusUnclamed,
+		Remark:      req.Remark,
+	}
+
+	if req.PostType == "found" {
+		arg.PostType = db.PostTypeStatusFound
+	} else if req.PostType == "lost" {
+		arg.PostType = db.PostTypeStatusLost
 	}
 
 	cat, err := server.store.CreateLostItem(ctx, arg)
