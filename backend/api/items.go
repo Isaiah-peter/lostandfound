@@ -6,6 +6,7 @@ import (
 	"time"
 
 	db "github.com/Isaiah-peter/lostandfound/db/sqlc"
+	"github.com/Isaiah-peter/lostandfound/token"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,12 +32,14 @@ func (server *Server) createLostItem(ctx *gin.Context) {
 
 	dates, _ := time.Parse("2006-Jan-02", req.Date)
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
 	arg := db.CreateLostItemParams{
 		CategoryID: sql.NullInt32{
 			Int32: req.CategoryID,
 			Valid: true,
 		},
-		FounderID:   req.FounderID,
+		FounderID:   authPayload.UserId,
 		Title:       req.Title,
 		Discription: req.Discription,
 		Date:        dates,
