@@ -176,3 +176,45 @@ func (server *Server) deleteLostItem(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"msg": "succesfully update LostItem"})
 }
+
+type createImageReq struct {
+	LostItemID    int32  `json:"lost_item_id"`
+	LostItemImage string `form:"lost_item_image"`
+}
+
+func (server *Server) addLostItemImage(ctx *gin.Context) {
+	var image createImageReq
+
+	if err := ctx.ShouldBindJSON(image); err != nil {
+		server.bindingError(ctx, http.StatusBadRequest, err)
+	}
+
+	lostItemImage := server.Upload(ctx, image.LostItemImage)
+
+	arg := db.CreateImageParams{
+		LostItemID: image.LostItemID,
+		LostItemImage: lostItemImage,
+	}
+
+	images, err := server.store.CreateImage(ctx, arg)
+
+	if err != nil {
+		server.bindingError(ctx, http.StatusInternalServerError, err)
+	}
+	ctx.JSON(http.StatusOK, images)
+}
+
+func (server *Server) getImages(ctx *gin.Context) {
+	var id GetLostItemReq
+
+	if err := ctx.ShouldBindUri(id); err != nil {
+		server.bindingError(ctx, http.StatusBadRequest, err)
+	}
+
+	images, err := server.store.GetImageByLID(ctx, id.Id)
+	if err != nil {
+		server.bindingError(ctx, http.StatusInternalServerError, err)
+	}
+
+	ctx.JSON(http.StatusOK, images)
+}
